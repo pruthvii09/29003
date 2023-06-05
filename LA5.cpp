@@ -1,153 +1,127 @@
-#include <iostream>
+#include<bits/stdc++.h>
 using namespace std;
 
-class node
+class node 
 {
-public:
-	int data;
-	int lth, rth;
-	node *right, *left;
+	public :
+		int data;
+		int lth,rth;
+		node *right,*left;
 };
 
-class TBT
+class TBT 
 {
-public:
-	node *root, *head;
-
-	TBT() // constructor
-	{
+	
+	public :node * root,* head;
+		TBT() 
+		{
 		head = new node;
 		head->right = head;
 		head->left = head;
-		head->lth = 0;
+		head->lth = 1;
 		head->rth = 0;
 		root = NULL;
-	}
-	void create();
-	void inorder();
-	node *inorderSucc(node *);
+		}
+		void create();
+		//void preorder();
+		void inorder();
+		node * inorderSucc(node *);
 };
 
-void TBT ::create()
-{
-	node *temp, *curr;
-	curr = new node;
-	cout << "\n Enter the data : ";
-	cin >> curr->data;
+void TBT :: create() {
+	node *temp,*curr;
+	char ch;
+	do {
+		curr = new node;
+		cout<<"\n Enter the data : ";
+		cin>>curr->data;
+		curr->right = NULL;
+		curr->left = NULL;
+		curr->lth = 1;
+		curr->rth = 1;
 
-	curr->right = NULL;
-	curr->left = NULL;
-	curr->lth = 0;
-	curr->rth = 0;
-
-	if (root == NULL)  // first node adding
-	{
-		root = curr;
-		root->right = head;
-		root->left = head;
-		head->left = root;
-		// head->lth = 1;
-	}
-	else
-	{
-		temp = root;
-		while (1)
+		if(root == NULL) 
 		{
-			if (curr->data < temp->data)  // comparing for bst
+			root = curr;
+			root->right = head;
+			root->left = head;
+			head->left = root;
+			head->lth = 0;			
+		} else 
+		{
+			temp = root;
+			while(1) 
 			{
-				if (temp->lth == 0)    // checking if child node is present
+				if(curr->data < temp->data) 
 				{
+					if(temp->lth == 1) 
+					{
 					curr->left = temp->left;
 					curr->right = temp;
-					temp->lth = 1;
-					temp->left = curr;
-					break;
-				}
-				else
-				{
-					temp = temp->left;
-				}
-			}
-			else
-			{
-				if (temp->rth == 0)
-				{
+					temp->lth = 0;
+					temp->left = curr;	
+					break;	
+					} 
+					else 
+					{
+						temp = temp->left;
+					}	
+				} 
+					else 
+					{
+					if(temp->rth == 1) 
+					{
 					curr->right = temp->right;
 					curr->left = temp;
-					temp->rth = 1;
+					temp->rth = 0;
 					temp->right = curr;
 					break;
+					} 
+					else 
+					{
+						temp = temp->right;		
+					}
 				}
-				else
-				{
-					temp = temp->right;
-				}
-			}
+			}				
 		}
-	}
+		cout<<"\n Do you want to continue (Y/N) :  ";
+		cin>>ch;
+	}while(ch == 'y' || ch == 'Y');	
 }
 
-void TBT ::inorder()
-{
-	node *temp;
+void TBT :: inorder() {
+	node* temp;
 	temp = head;
-	do
-	{
+	do{
 		temp = inorderSucc(temp);
-		if (temp != head)
-			cout << temp->data << " ";
-	} while (temp != head);
+		if(temp!= head)
+			cout<<temp->data<<" ";
+	}while(temp != head);
 }
-
-node *TBT ::inorderSucc(node *temp)
-{
-	node *p;
+node * TBT :: inorderSucc(node * temp) {
+	node * p;
 	p = temp->right;
-	if (temp->rth == 1)
-	{
-		while (p->lth == 1)
-		{
+	if(temp->rth == 0) {
+		while(p->lth == 0) {
 			p = p->left;
 		}
 	}
-	return p;
+	return p;	
 }
 
-int main()
+int main() 
 {
 	TBT t;
-	int num;
-	int ch;
-
-	while (true)
-	{
-		cout << "\n1.Create a binary tree ";
-		cout << "\n2.Inorder traversal is : ";
-		cout << "\n3.Exit";
-
-		cout << "\nEnter choice";
-		cin >> ch;
-
-		switch (ch)
-		{
-		case 1:
-			cout << "\nEnter total nodes in a tree : ";
-			cin >> num;
-			for (int i = 0; i < num; i++)
-			{
-				t.create();
-			}
-			break;
-		case 2:
-			cout << "\nInorder traversal is : ";
-			t.inorder();
-			break;
-		case 3:
-			cout << "\nEnd of program";
-			exit(0);
-		default:
-			cout << "\nEnter valid choice";
-		}
-	}
-	return 0;
+	cout<<"\n Create a binary tree : ";
+	t.create();
+	/*cout<<"\n Preorder traversal is : ";
+	t.preorder();*/
+	cout<<"\n Inorder traversal is : ";
+	t.inorder();
+return 0;
 }
+
+
+
+
+

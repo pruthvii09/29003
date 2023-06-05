@@ -12,14 +12,14 @@ class Dictionary:
     def _hash_function(self, key):
         return hash(key) % self.size
 
-    def insert(self, value, key):
+    def insert(self, key, value):
         hash_key = self._hash_function(key)
         slot = self.table[hash_key]
         slot.append(KeyValuePair(key, value))
 
     def display(self):
         for i, slot in enumerate(self.table):
-            print(f"\nIndex {i} : ")
+            print(f"\nIndex {i}:")
             for pair in slot:
                 print(f"Key : {pair.key} Value : {pair.value} --> ", end='')
 

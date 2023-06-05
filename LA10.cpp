@@ -40,37 +40,36 @@ void stud::insertheap(int tot)
 }
 void stud::insertMaxheap(int tot)
 {
-    for (int i = 0; i < tot; i++)
+  for (int i = 0; i < tot; i++)
+  {
+    cout << "Enter marks: ";
+    cin >> mks[i];
+
+    int child = i;
+    int parent = child / 2;
+
+    while (child > 0 && mks[child] > mks[parent])
     {
-        cout << "Enter marks: ";
-        cin >> mks[i];
-        
-        int child = i;
-        int parent = child / 2;
+      int temp = mks[child];
+      mks[child] = mks[parent];
+      mks[parent] = temp;
 
-        while (child > 0 && mks[child] > mks[parent])
-        {
-            int temp = mks[child];
-            mks[child] = mks[parent];
-            mks[parent] = temp;
-
-            child = parent;
-            parent = child / 2;
-        }
+      child = parent;
+      parent = child / 2;
     }
+  }
 }
 
 void stud::displayheap(int tot)
 {
-  for(int i = 1;i<=tot;i++)
-  {
-    cout<<"hii : "<<mks[i]<<endl;
-  }
-  int i = 1, level = 1, count = 0 ,space = 6;
+    for (int i = 1; i <= tot; i++)
+    {
+      cout << "hii : " << mks[i] << endl;
+    }
+  int i = 1, level = 1, count = 0, space = 6;
   while (i <= tot)
   {
-    // count++;
-        if (i == 2 || i == 4 || i == 8 || i == 16 || i == 1)
+    if (i == 2 || i == 4 || i == 8 || i == 16 || i == 1)
     {
       cout << endl
            << endl;
@@ -90,7 +89,6 @@ void stud::displayheap(int tot)
     i++;
   }
 }
-
 
 void stud::showmax(int tot)
 {
