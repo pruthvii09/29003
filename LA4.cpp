@@ -1,287 +1,243 @@
-//BST using ADT
 #include<iostream>
-#include<cstring>
+#include<string.h>
 using namespace std;
-
-struct node
+typedef struct node
 {
-char word[10];
-string meaning;
-struct node* left;
-struct node* right;
+    char k[20];
+    char m[20];
+    class node*left;
+    class node*right;
+    
+}node;
+class Dict
+{
+    public:
+    node*root;
+    void create();
+    void disp(node*);
+    void insert(node*root,node*temp);
+    int search(node*,char[]);
+    int update(node*,char[]);
+    node*del(node*,char[]);
+    node*min(node*);
 };
 
-struct node* root=NULL;
-
-void adWord()
+void Dict::create()
 {
-struct node* temp=new node;
-cout<<"\nENTER WORD : ";
-cin>>temp->word;
-cout<<"\nENTER MEANING : ";
-cin.get();
-getline(cin,temp->meaning);
-
-temp->left=NULL;
-temp->right=NULL;
-
-if(root==NULL)
-{
-    root=temp;
-}
-else
-{
-    struct node* p=root;
-    struct node* q;
-    while(p!=NULL)
-    {
-        q=p;
-        if(strcmp(temp->word,p->word)<0)
+    class node *temp;
+    int ch;
+    do{
+        temp=new node;
+        cout<<"\nEnter Keyword:";
+        cin>>temp->k;
+        cout<<"\nEnter Meaning:";
+        cin>>temp->m;
+        temp->left=NULL;
+        temp->right=NULL;
+        if(root==NULL)
         {
-            p=p->left;
+            root=temp;
         }
         else
         {
-            p=p->right;
+            insert(root,temp);
         }
-    }
-    if(strcmp(temp->word,q->word)<0){
-        q->left=temp;
-    }
-    else{
-        q->right=temp;
-    }
-  }
+        cout<<"\nDo u want to Add more(y=1/y=0)";
+        cin>>ch;
+    }while(ch==1);
 }
-
-void displayWord(struct node* p)
+void Dict::insert(node*root,node*temp)
 {
-if(p->left!=NULL)
-{
-    displayWord(p->left);
-}
-cout<<"\nWORD : "<<p->word<<"   "<<"MEANING : "<<p->meaning;
-if(p->right!=NULL)
-{
-    displayWord(p->right);
-}
-}
-
-void searchAndUpdate(struct node* p,char word[10])
-{
-    string newMeaning;
-if(strcmp(word,p->word)<0)
-{
-    searchAndUpdate(p->left,word);
-}
-if(strcmp(word,p->word)>0)
-{
-    searchAndUpdate(p->right,word);
-}
-
-if(strcmp(word,p->word)==0)               //update
-{
-    cout<<"\nENTER NEW MEANING OF WORD : ";
-    cin.get();
-    getline(cin,newMeaning);
-    
-    p->meaning=newMeaning;
-}
-}
-
-int count=0;
-void noOfComparisons(struct node* p,char word[10])
-{
- count++;
-if(strcmp(word,p->word)==0)
-{
-    cout<<"\nTOTAL COMPARISONS : "<<count;
-    count=0;
-}
-if(strcmp(word,p->word)<0)
-{
-    noOfComparisons(p->left,word);
-}
-if(strcmp(word,p->word)>0)
-{
-    noOfComparisons(p->right,word);
-}
-}
-
-void deleteNodes(struct node* p,char word[10])
-{
-struct node* q;
-struct node* r;
-while(p!=NULL)
-{
-  q=p;
-    if(strcmp(word,p->word)<0)
-{
-        p=p->left;
-    }
-    if(strcmp(word,p->word)>0)
-{
-        p=p->right;
-    }
-    if(strcmp(word,p->word)==0)
-{
-        break;
-    }
-}
-while(1)
-{
-if(p==q && p->left==NULL && p->right==NULL)
-{
- root=NULL;
- delete p;
- break;
-}
-if(p==q && p->right==NULL && p->left!=NULL)
-{
- strcpy(p->word,p->left->word);
- p->meaning=p->left->meaning;
- 
- p->left=NULL;
- struct node* r=p->left;
- delete r;
- break;
-}
-if(p==q && p->left==NULL && p->right!=NULL)
-{
- strcpy(p->word,p->right->word);
-  p->meaning=p->right->meaning;
-  
- p->right=NULL;
- struct node* r=p->right;
- delete r;
-
-break;
-}
-if(p!=q && p->left==NULL && p->right==NULL)
-{
-    if(q->right==p)
+    if(strcmp(temp->k,root->k)<0)
     {
-        q->right=NULL;
-        delete p;
-        break;
+        if(root->left==NULL)
+            root->left=temp;
+        else
+        insert(root->left,temp);
     }
-    if(q->left==p)
+    else
     {
-      q->left=NULL;
-        delete p;
-        break;
+        if(root->right==NULL)
+        root->right=temp;
+        else
+        insert(root->right,temp);
     }
 }
-if(p->right!=NULL && p->left==NULL)
+void Dict::disp(node *root)
 {
-    if(q->right==p)
-{
-        q->right=p->right;
-        p->right=NULL;
-        delete p;
-        break;
-    }
-    if(q->left==p)
-{
-        q->left=p->right;
-        p->right=NULL;
-        delete p;
-        break;
-    }
-
-}
-if(p->right==NULL && p->left!=NULL)
-{
-    if(q->right==p)
-{
-        q->right=p->left;
-        p->left=NULL;
-        delete p;
-        break;
-    }
-    if(q->left==p)
-{
-        q->left=p->left;
-        p->left=NULL;
-        delete p;
-        break;
+    if(root!=NULL)
+    {
+        disp(root->left);
+        cout<<"\n Key Word:"<<root->k;
+        cout<<"\tMeaning:"<<root->m;
+        disp(root->right);
     }
 }
-if(p->right!=NULL && p->left!=NULL)
+int Dict::search(node*root,char k[20])
 {
-struct node* t=p;
-struct node* r;
-
-p=p->right;
-char min[10];
-strcpy(min,p->word);
-
-while(p!=NULL)
+    int c=0;
+    while(root!=NULL)
+    {
+        c++;
+        if(strcmp(k,root->k)==0)
+        {
+            cout<<"\nNo of Comparisions"<<c;
+            return 1;
+        }
+        if(strcmp(k,root->k)<0)
+            root=root->left;
+        if(strcmp(k,root->k)>0)
+            root=root->right;
+        }
+        return -1;
+}
+int Dict::update(node *root,char k[20])
 {
-    if(p->word < min){
-        strcpy(min,p->word);
-        r=p;
+    while(root!=NULL)
+    {
+        if(strcmp(k,root->k)==0)
+        {
+            cout<<"\nEnter New Meaning of Key:"<<root->k;
+            cin>>root->m;
+            return 1;
+        }
+        if(strcmp(k,root->k)<0)
+            root=root->left;
+        if(strcmp(k,root->k)>0)
+            root=root->right;
     }
- p=p->left;
+    return 1;
 }
-deleteNodes(root,min);
-strcpy(t->word,min);
-break;
+node *Dict::del(node *root,char k[20])
+{
+    node *temp;
+    if(root==NULL)
+    {
+        cout<<"\nElement Not Found";
+        return root;
+    }
+    if(strcmp(k,root->k)<0)
+    {
+        root->left=del(root->left,k);
+        return root;
+    }
+    if(strcmp(k,root->k)>0)
+    {
+        root->right=del(root->right,k);
+        return root;
+    }
+    if(root->right==NULL && root->left==NULL)
+    {
+        temp=root;
+        delete temp;
+        return NULL;
+    }
+    if(root->right==NULL)
+    {
+        temp=root;
+        root=root->left;
+        delete temp;
+        return root;
+    }
+    else if(root->left==NULL)
+    {
+        temp=root;
+        root=root->right;
+        delete temp;
+        return root;
+    }
+    temp=min(root->right);
+    strcpy(root->k,temp->k);
+    root->right=del(root->right,temp->k);
+    return root;
 }
+node *Dict::min(node *q)
+{
+    while(q->left!=NULL)
+    {
+        q=q->left;
+    }
+    return q;
 }
-}
-
 int main()
 {
-int ch,words;
-char newWord[10];
-while(true)
-{
-    cout<<"\n1.Insert The Data:"<<endl;
-    cout<<"2.Display the Data"<<endl;
-    cout<<"3.Search and Update"<<endl;
-    cout<<"4.Find the Number of Comparisons"<<endl;
-    cout<<"5.Delete the Node"<<endl;
-    
-    cout<<"\nEnter the Choice:";
-    cin>>ch;
-  switch(ch)
-  {
-  case 1:
-        cout<<"\nHow many words you want to add : ";
-        cin>>words;
-        for(int i=1;i<=words;i++)
+    int ch;
+    Dict d;
+    d.root=NULL;
+    do{
+        cout<<"\nEnter the option no. to perform:\n1.Create\n2.Display\n3.Search\n4.Update\n5.Delete\n--->";
+        cin>>ch;
+        switch(ch)
         {
-            adWord();
+            case 1: d.create();
+                    break;
+            case 2:if(d.root==NULL)
+                    {
+                        cout<<"\nNo any Keyword!";
+                    }
+                    else
+                    {
+                        d.disp(d.root);
+                    }
+                    break;
+            case 3:if(d.root==NULL)
+                    {
+                        cout<<"\nDictionary is Empty.First add keywords then try again!";
+                    }
+                    else
+                    {
+                    cout<<"\nEnter Keyword which u want to search:";
+                    char k[20];
+                    cin>>k;
+                    
+                    if(d.search(d.root,k)==1)
+                        cout<<"\nKeyword Found!!";
+                    else
+                    cout<<"\nKeyword Not found!!";
+                    
+                    }
+                break;
+            case 4:if(d.root==NULL)
+                    {
+                        cout<<"\nDictionary is Empty.First add  keyworsd and then try again!";
+                    }
+                    else{
+                        cout<<"\nEnter the keyword Which meaning want you to update:";
+                        char k[20];
+                        cin>>k;
+                        if(d.update(d.root,k)==1)
+                        {
+                            cout<<"\nMeaning Updated";
+                            
+                        }
+                        else
+                        
+                        cout<<"\nMeaning Not Found";
+                    }
+                    break;
+            case 5:if(d.root==NULL)
+                    {
+                        cout<<"\nDictionary is empty.First add the keywords then try again";
+                    }
+                    else
+                    {
+                    cout<<"\nEnter the keyword which you want to delete";
+                        char k[20];
+                        cin>>k;
+                        if(d.root==NULL)
+                        {
+                            cout<<"\nNo any Keyword";
+                        }
+                        else
+                        {
+                            d.root=d.del(d.root,k);
+                            cout<<"Deleted Succesfully!!";
+                        }
+                    }
+                    break;
         }
-        break;
-  case 2:
-        displayWord(root);
-        cout<<endl;
-        break;
-  case 3:
-        cout<<"\nEnter word to search and update : ";
-        cin>>newWord;
-        searchAndUpdate(root,newWord);
-        break;
-  case 4:
-        cout<<"\nEnter word to check no of comparisons : ";
-        cin>>newWord;
-        noOfComparisons(root,newWord);
-        break;
-  case 5:
-        cout<<"\nEnter word to delete : ";
-        cin>>newWord;
-        deleteNodes(root,newWord);
-  }
+                    
+    }while(ch<=5);
+    return 0;
 }
-return 0;
-}
-
-
-
-
-
-
-
 
