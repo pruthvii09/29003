@@ -1,256 +1,110 @@
-#include<iostream>
-#include<stdio.h>
-#include<fstream>
+#include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
-
-struct student
+void add()
 {
-	int roll;
-	char name[20];
-};
-
-class database
-{
-	struct student st;
-	public:
-		void insert_data();
-		void read_data();
-		void search_data();
-		void update_data();
-		void delete_data();
-		void sort_data();
-};
-void database::sort_data()
-{
-	ifstream file;
-	ofstream out;
-	struct student st[50],temp;
-	int i=0,n,j;
-
-	file.open("database.txt",ios::binary|ios::in);
-	file.read((char*)&st[i],sizeof(st[i])); 		//Important
-
-	while(!file.eof())
-	{
-		i++;
-		file.read((char*)&st[i],sizeof(st[i]));
-	}
-	file.close();
-
-	n=i;
-
-	for(i=0;i<=n;i++)
-	{
-		for(j=i+1;j<=n;j++)
-		{
-			if(st[i].roll>st[j].roll)
-			{
-				temp=st[i];
-				st[i]=st[j];
-				st[j]=temp;
-			}
-		}
-	}
-	out.open("database.txt",ios::binary|ios::trunc|ios::out);
-	for(i=0;i<n;i++)
-	{
-		out.write((char*)&st[i],sizeof(struct student));
-	}
-	out.close();
-
+    ofstream file("student.txt", ios::app);
+        int rollNumber;
+        string name, division, address;
+        
+        cout << "Enter roll number: ";
+        cin >> rollNumber;
+        cout << "Enter name: ";
+        cin.ignore();    //to clear the Buffer
+        getline(cin, name);
+        cout << "Enter division: ";
+        getline(cin, division);
+        cout << "Enter address: ";
+        getline(cin, address);
+        file << rollNumber << " " << name << " " << division << " " << address << endl;
+        
+    file.close();
+    cout << "Student information added successfully!" << endl;
 }
-
-void database::read_data()
+void del()
 {
-	struct student st;
-	ifstream file;
-
-	file.open("database.txt",ios::binary|ios::in);
-
-	file.read((char*)&st,sizeof(st)); 		//Important
-
-	while(!file.eof())
-	{
-		cout<<"\n"<<st.roll<<"\t"<<st.name;
-		file.read((char*)&st,sizeof(st));
-	}
-
-	cout<<"\n";
-
-	file.close();
+    int rollNumbertodelete;
+    cout << "Enter the roll number to delete: ";
+    cin >> rollNumbertodelete;
+    
+    ifstream inputFile("student.txt");
+    ofstream tempFile("temp.txt", ios::app);
+    int flag =0;
+    int RollNumber;
+    string name, division, address;
+    while (inputFile >> RollNumber >> name >> division >> address)
+    {
+        if (RollNumber != rollNumbertodelete)
+        {
+            tempFile << RollNumber << " " << name << " " << division << " " << address << endl;
+        } else
+        {
+            flag=1;
+        }
+    }
+    inputFile.close();
+    tempFile.close();
+    remove("student.txt");
+    rename("temp.txt", "student.txt");
+    
+    if (flag==1)
+    {
+        cout << "Student information deleted successfully!" << endl;
+    }
+    else
+    {
+        cout << "Student record not found!" << endl;
+    }
 }
-
-void database::update_data()
+void display()
 {
-	struct student st;
-	int roll_number,flag=0,flag1=0;
-	ifstream file;
-	ofstream ofile;
-
-	cout<<"\nEnter the roll no. of the record that you want to search :";
-	cin>>roll_number;
-
-	file.open("database.txt",ios::binary|ios::in);
-	ofile.open("db1.txt",ios::binary|ios::out|ios::trunc);
-
-	file.read((char*)&st,sizeof(st)); 		//Important
-
-	while(!file.eof())
-	{
-		if(roll_number==st.roll)
-		{
-			cout<<"\nRECORD FOUND!!!";
-			cout<<"\nEnter new name of the student";
-			cin>>st.name;
-			ofile.write((char*)&st,sizeof(st));
-			flag=1;flag1=1;
-		}
-		if(flag==0)
-		{
-			ofile.write((char*)&st,sizeof(st));
-		}
-		flag=0;
-		file.read((char*)&st,sizeof(st));
-	}
-	if(flag1==0)
-	{
-		cout<<"\nRECORD NOT FOUND!!!\n";
-	}
-	cout<<"\n";
-	remove("database.txt");
-	rename("db1.txt","database.txt");
-
-	file.close();
-}
-
-void database::delete_data()
-{
-	struct student st;
-	int roll_number,flag=0,flag1=0;
-	ifstream file;
-	ofstream ofile;
-
-	cout<<"\nEnter the roll no. of the record that you want to search :";
-	cin>>roll_number;
-
-	file.open("database.txt",ios::binary|ios::in);
-	ofile.open("db1.txt",ios::binary|ios::out|ios::trunc);
-
-	file.read((char*)&st,sizeof(st)); 		//Important
-
-	while(!file.eof())
-	{
-		if(roll_number==st.roll)
-		{
-			cout<<"\nRECORD FOUND!!!";
-			flag=1;flag1=1;
-		}
-		if(flag==0)
-		{
-			ofile.write((char*)&st,sizeof(st));
-		}
-		flag=0;
-		file.read((char*)&st,sizeof(st));
-	}
-	if(flag1==0)
-	{
-		cout<<"\nRECORD NOT FOUND!!!\n";
-	}
-	cout<<"\n";
-	remove("database.txt");
-	rename("db1.txt","database.txt");
-
-	file.close();
-}
-
-void database::search_data()
-{
-	struct student st;
-	int roll_number,flag=0;
-	ifstream file;
-
-	cout<<"\nEnter the roll no. of the record that you want to search :";
-	cin>>roll_number;
-
-	file.open("database.txt",ios::binary|ios::in);
-
-	file.read((char*)&st,sizeof(st)); 		//Important
-
-	while(!file.eof())
-	{
-		if(roll_number==st.roll)
-		{
-			cout<<"\nRECORD FOUND!!!";
-			cout<<"\n"<<st.roll<<"\t"<<st.name;
-			flag=1;
-			break;
-		}
-		file.read((char*)&st,sizeof(st));
-	}
-	if(flag==0)
-	{
-		cout<<"\nRECORD NOT FOUND!!!\n";
-	}
-
-	cout<<"\n";
-
-	file.close();
-}
-
-void database::insert_data()
-{
-	ofstream file;
-
-	file.open("database.txt",ios::binary|ios::out|ios::app);
-
-	cout<<"Enter the roll and name of the student";
-	cin>>st.roll>>st.name;
-
-
-	file.write((char*)&st,sizeof(struct student));
-	file.close();
+    int rollNumber;
+    cout << "Enter the roll number to display: ";
+    cin >> rollNumber;
+    ifstream inputFile("student.txt");
+    int flag =0;
+    int RollNumber;
+    string name, division, address;
+    
+    while (inputFile >> RollNumber >> name >> division >> address)
+    {
+        if (RollNumber == rollNumber)
+        {
+            flag =1;
+            cout << "Roll Number: " << RollNumber << endl;
+            cout << "Name: " << name << endl;
+            cout << "Division: " << division << endl;
+            cout << "Address: " << address << endl;
+            break;
+        }
+    }
+    inputFile.close();
+    if (flag==0)
+    {
+        cout << "Student record not found!" << endl;
+    }
 }
 
 int main()
 {
-	database obj;
-	int choice;
-	while(1)
-	{
-		cout<<"\n1.Insert Record";
-		cout<<"\n2.Search Record";
-		cout<<"\n3.Update Record";
-		cout<<"\n4.Delete Record";
-		cout<<"\n5.Sort Records";
-		cout<<"\n6.Display Records";
-		cout<<"\n7.Quit";
-		cout<<"\nEnter your choice ";
-		cin>>choice;
-		switch(choice)
-		{
-			case 1:
-				obj.insert_data();
-				break;
-			case 2:
-				obj.search_data();
-				break;
-			case 3:
-				obj.update_data();
-				break;
-			case 4:
-				obj.delete_data();
-				break;
-			case 5:
-				obj.sort_data();
-				break;
-			case 6:
-				obj.read_data();
-				break;
-			case 7:
-				return 0;
-		};
-	}
+    int choice;
+    do
+    {
+        cout << "\n1. Add \n2. Delete\n3. Display\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+        switch (choice)
+        {
+            case 1:
+                add();
+                break;
+            case 2:
+                del();
+                break;
+            case 3:
+                display();
+                break;
+        }
+    }while(choice<=3);
+    return 0;
 }
-
-
-
